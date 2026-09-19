@@ -6,7 +6,12 @@
 #pragma once
 
 #include <QWidget>
+#include <QFrame>
 #include <QPushButton>
+#include <QTextCharFormat>
+#include <QTextBlockFormat>
+#include <QTextListFormat>
+#include <QMap>
 #include "../domain/TabController.h"
 #include "MarkdownEditor.h"
 
@@ -147,9 +152,11 @@ private slots:
 private:
     domain::TabController* m_controller; ///< Observing pointer to domain tab controller.
     
-    QPushButton* m_copyButton;          ///< Button to copy Markdown content to clipboard.
-    QPushButton* m_closeButton;         ///< Button to dismiss the active note overlay.
-    MarkdownEditor* m_textEdit;         ///< Embedded rich Markdown text editor.
+    QFrame* m_cardFrame;                 ///< The primary rounded overlay container widget.
+    MarkdownEditor* m_textEdit;          ///< The rich-text layout and input component.
+    QPushButton* m_copyButton;           ///< Triggers Markdown clipboard export.
+    QPushButton* m_closeButton;          ///< Dismisses the active note editor overlay.
+    QMap<int, int> m_scrollPositions;    ///< Map of note IDs to their last scroll bar positions.
     
     /**
      * @brief Helper factory for instantiating uniformly styled formatting toolbar buttons.

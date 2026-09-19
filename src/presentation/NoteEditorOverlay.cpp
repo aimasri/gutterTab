@@ -8,6 +8,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QApplication>
+#include <QGuiApplication>
+#include <QScrollBar>
 #include <QClipboard>
 #include <QKeyEvent>
 #include <QTextCursor>
@@ -146,6 +148,10 @@ QPushButton* NoteEditorOverlay::createToolbarBtn(const QString& text) {
 void NoteEditorOverlay::onActiveNoteChanged(int noteId) {
     // Step 1: If noteId is -1, dismiss overlay immediately
     if (noteId == -1) {
+        // Save scroll position for the current note before hiding
+        if (m_controller->activeNoteId() != -1 && m_textEdit->verticalScrollBar()) {
+            m_scrollPositions[m_controller->activeNoteId()] = m_textEdit->verticalScrollBar()->value();
+        }
         hide();
     } else {
         // Step 2: Fetch note entity from persistent SQLite storage
@@ -159,6 +165,11 @@ void NoteEditorOverlay::onActiveNoteChanged(int noteId) {
                 m_textEdit->setMarkdown(noteOpt->content);
             }
             m_textEdit->blockSignals(false);
+            
+            // Restore scroll position if we have one
+            if (m_scrollPositions.contains(noteId) && m_textEdit->verticalScrollBar()) {
+                m_textEdit->verticalScrollBar()->setValue(m_scrollPositions[noteId]);
+            }
             
             // Step 4: Compute semi-transparent tint based on the note's tab accent color
             QColor c(noteOpt->color);

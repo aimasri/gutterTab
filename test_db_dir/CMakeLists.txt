@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.16)
+project(TestGui)
+find_package(Qt6 COMPONENTS Core Sql Gui Widgets REQUIRED)
+set(CMAKE_AUTOMOC ON)
+add_executable(test_gui ../test_gui.cpp ../src/domain/TabController.cpp ../src/infrastructure/DatabaseManager.cpp ../src/infrastructure/ConfigManager.cpp ../src/presentation/NoteEditorOverlay.cpp ../src/presentation/MarkdownEditor.cpp)
+target_link_libraries(test_gui Qt6::Core Qt6::Sql Qt6::Gui Qt6::Widgets)
+target_include_directories(test_gui PRIVATE ../)

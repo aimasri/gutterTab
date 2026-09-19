@@ -87,14 +87,16 @@ void TabController::openNote(int noteId) {
 }
 
 void TabController::closeNote() {
-    // Step 1: Clear active note identifier using sentinel -1.
-    m_activeNoteId = -1;
+    if (m_activeNoteId != -1) {
+        m_activeNoteId = -1;
+        // Step 1: Refresh dashboard UI to reflect any changes made during editing
+        emit notesLoaded();
+        // Step 2: Signal overlay to hide
+        emit activeNoteChanged(-1);
+    }
 
     // Step 2: Transition finite state machine back to IDLE state.
     setState(State::IDLE);
-
-    // Step 3: Notify UI listeners that no note is active so they can hide overlays.
-    emit activeNoteChanged(-1);
 }
 
 void TabController::toggleDashboard() {

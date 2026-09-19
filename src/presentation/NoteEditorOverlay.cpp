@@ -37,13 +37,6 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     QFrame* card = new QFrame(this);
     card->setObjectName("sleekCard");
     card->setAttribute(Qt::WA_StyledBackground, true);
-    card->setStyleSheet(
-        "QFrame#sleekCard {"
-        "    background-color: #18181b;"
-        "    border-radius: 8px;"
-        "    border: 1px solid #27272a;"
-        "}"
-    );
     
     QVBoxLayout* cardLayout = new QVBoxLayout(card);
     cardLayout->setContentsMargins(16, 16, 16, 16);
@@ -55,27 +48,12 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     m_copyButton->setObjectName("copyBtn");
     m_copyButton->setToolTip("Copy Markdown");
     m_copyButton->setFixedSize(30, 30);
+    m_copyButton->setCursor(Qt::PointingHandCursor);
     
     m_closeButton = new QPushButton("✕", card);
     m_closeButton->setObjectName("cancelBtn");
     m_closeButton->setFixedSize(30, 30);
-    
-    QString btnStyles = 
-        "QPushButton#copyBtn {"
-        "    background-color: transparent; border: none; border-radius: 4px;"
-        "    image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='9' y='9' width='13' height='13' rx='2' ry='2'></rect><path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'></path></svg>\");"
-        "}"
-        "QPushButton#copyBtn:hover {"
-        "    background-color: #3f3f46;"
-        "    image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='9' y='9' width='13' height='13' rx='2' ry='2'></rect><path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'></path></svg>\");"
-        "}"
-        "QPushButton#cancelBtn {"
-        "    background-color: transparent; color: #a1a1aa; border: none; font-weight: bold; font-size: 14px;"
-        "}"
-        "QPushButton#cancelBtn:hover { color: white; background-color: #ef4444; border-radius: 15px; }";
-        
-    m_copyButton->setStyleSheet(btnStyles);
-    m_closeButton->setStyleSheet(btnStyles);
+    m_closeButton->setCursor(Qt::PointingHandCursor);
     
     topLayout->addStretch();
     topLayout->addWidget(m_copyButton);
@@ -86,21 +64,17 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     // Step 4: Build formatting toolbar buttons
     QHBoxLayout* formatLayout = new QHBoxLayout();
     formatLayout->setSpacing(8);
-    auto* btnBold = createToolbarBtn("B");
-    btnBold->setStyleSheet("font-weight: bold;");
-    auto* btnItalic = createToolbarBtn("I");
-    btnItalic->setStyleSheet("font-style: italic;");
-    auto* btnUnder = createToolbarBtn("U");
-    btnUnder->setStyleSheet("text-decoration: underline;");
-    auto* btnStrike = createToolbarBtn("S");
-    btnStrike->setStyleSheet("text-decoration: line-through;");
+    auto* btnBold = createToolbarBtn("B"); btnBold->setObjectName("btnBold");
+    auto* btnItalic = createToolbarBtn("I"); btnItalic->setObjectName("btnItalic");
+    auto* btnUnder = createToolbarBtn("U"); btnUnder->setObjectName("btnUnder");
+    auto* btnStrike = createToolbarBtn("S"); btnStrike->setObjectName("btnStrike");
     
-    auto* btnH1 = createToolbarBtn("H1");
-    auto* btnH2 = createToolbarBtn("H2");
-    auto* btnH3 = createToolbarBtn("H3");
+    auto* btnH1 = createToolbarBtn("H1"); btnH1->setObjectName("btnH1");
+    auto* btnH2 = createToolbarBtn("H2"); btnH2->setObjectName("btnH2");
+    auto* btnH3 = createToolbarBtn("H3"); btnH3->setObjectName("btnH3");
     
-    auto* btnBullet = createToolbarBtn("•");
-    auto* btnNum = createToolbarBtn("1.");
+    auto* btnBullet = createToolbarBtn("•"); btnBullet->setObjectName("btnBullet");
+    auto* btnNum = createToolbarBtn("1."); btnNum->setObjectName("btnNum");
     
     formatLayout->addWidget(btnBold);
     formatLayout->addWidget(btnItalic);
@@ -119,7 +93,6 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     
     // Step 5: Instantiate and configure embedded MarkdownEditor
     m_textEdit = new MarkdownEditor(card);
-    m_textEdit->setStyleSheet("background-color: #27272a; color: #e4e4e7; font-family: sans-serif; font-size: 16px; border: 1px solid #3f3f46; border-radius: 6px; padding: 12px;");
     cardLayout->addWidget(m_textEdit);
     
     mainLayout->addWidget(card);
@@ -162,11 +135,9 @@ NoteEditorOverlay::~NoteEditorOverlay() {}
  */
 QPushButton* NoteEditorOverlay::createToolbarBtn(const QString& text) {
     auto* btn = new QPushButton(text, this);
+    btn->setObjectName("toolbarBtn");
     btn->setFixedSize(36, 36);
     btn->setCursor(Qt::PointingHandCursor);
-    QString baseStyle = "QPushButton { background-color: #27272a; color: #d4d4d8; border: 1px solid #3f3f46; border-radius: 4px; font-size: 14px; }"
-                        "QPushButton:hover { background-color: #3f3f46; color: white; }";
-    btn->setStyleSheet(baseStyle);
     return btn;
 }
 
@@ -189,16 +160,21 @@ void NoteEditorOverlay::onActiveNoteChanged(int noteId) {
             
             // Step 4: Compute semi-transparent tint based on the note's tab accent color
             QColor c(noteOpt->color);
-            QString bgColor = QString("rgba(%1, %2, %3, 0.1)").arg(c.red()).arg(c.green()).arg(c.blue());
-            QString style = QString(
-                "QTextEdit {"
+            QString bgColor = QString("rgba(%1, %2, %3, 0.15)").arg(c.red()).arg(c.green()).arg(c.blue());
+            QString hoverColor = QString("rgba(%1, %2, %3, 0.3)").arg(c.red()).arg(c.green()).arg(c.blue());
+            
+            QString globalStyle = QString(
+                "QFrame#sleekCard {"
                 "    background-color: %1;"
+                "    border: 2px solid %2;"
+                "    border-radius: 12px;"
+                "}"
+                "QTextEdit {"
+                "    background: transparent;"
                 "    color: #e4e4e7;"
                 "    font-family: sans-serif;"
                 "    font-size: 16px;"
-                "    border: 1px solid %2;"
-                "    border-radius: 6px;"
-                "    padding: 12px;"
+                "    border: none;"
                 "}"
                 "QScrollBar:vertical {"
                 "    border: none;"
@@ -222,8 +198,38 @@ void NoteEditorOverlay::onActiveNoteChanged(int noteId) {
                 "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {"
                 "    background: none;"
                 "}"
-            ).arg(bgColor).arg(noteOpt->color);
-            m_textEdit->setStyleSheet(style);
+                "QPushButton#toolbarBtn {"
+                "    background-color: transparent;"
+                "    color: #d4d4d8;"
+                "    border: none;"
+                "    border-radius: 4px;"
+                "    font-size: 14px;"
+                "}"
+                "QPushButton#toolbarBtn:hover {"
+                "    background-color: %3;"
+                "    color: white;"
+                "}"
+                "QPushButton#btnBold { font-weight: bold; }"
+                "QPushButton#btnItalic { font-style: italic; }"
+                "QPushButton#btnUnder { text-decoration: underline; }"
+                "QPushButton#btnStrike { text-decoration: line-through; }"
+                "QPushButton#copyBtn {"
+                "    background-color: transparent; border: none; border-radius: 4px;"
+                "    image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='9' y='9' width='13' height='13' rx='2' ry='2'></rect><path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'></path></svg>\");"
+                "}"
+                "QPushButton#copyBtn:hover {"
+                "    background-color: %3;"
+                "}"
+                "QPushButton#cancelBtn {"
+                "    background-color: transparent; color: #a1a1aa; border: none; font-weight: bold; font-size: 14px;"
+                "}"
+                "QPushButton#cancelBtn:hover { color: white; background-color: #ef4444; border-radius: 15px; }"
+            ).arg(bgColor, noteOpt->color, hoverColor);
+            
+            QFrame* card = findChild<QFrame*>("sleekCard");
+            if (card) {
+                card->setStyleSheet(globalStyle);
+            }
             
             // Step 5: Center the card on the primary display geometry
             if (QScreen* screen = QGuiApplication::primaryScreen()) {

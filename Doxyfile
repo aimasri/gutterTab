@@ -1,0 +1,57 @@
+# Doxyfile for gutterTab
+
+PROJECT_NAME           = "gutterTab"
+PROJECT_NUMBER         = "1.0"
+PROJECT_BRIEF          = "Edge-docked note and prompt management daemon"
+OUTPUT_DIRECTORY       = doc_output
+CREATE_SUBDIRS         = NO
+OUTPUT_LANGUAGE        = English
+
+# Inputs
+INPUT                  = src \
+                         README.md \
+                         ARCHITECTURE.md
+USE_MDFILE_AS_MAINPAGE = README.md
+FILE_PATTERNS          = *.h \
+                         *.cpp \
+                         *.md
+RECURSIVE              = YES
+EXCLUDE                = build
+
+# Extraction settings
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_PRIV_VIRTUAL   = YES
+EXTRACT_PACKAGE        = YES
+EXTRACT_STATIC         = YES
+EXTRACT_LOCAL_CLASSES  = YES
+EXTRACT_ANON_NSPACES   = YES
+HIDE_UNDOC_MEMBERS     = NO
+HIDE_UNDOC_CLASSES     = NO
+BRIEF_MEMBER_DESC      = YES
+REPEAT_BRIEF           = YES
+JAVADOC_AUTOBRIEF      = YES
+
+# Warning settings
+QUIET                  = NO
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = YES
+
+# Output Formats
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+HTML_FILE_EXTENSION    = .html
+GENERATE_LATEX         = NO
+
+# Preprocessing & Qt Support
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = YES
+SEARCH_INCLUDES        = YES
+PREDEFINED             = Q_OBJECT \
+                         "signals=public" \
+                         "slots=" \
+                         "Q_PROPERTY(x)=" \
+                         "[[nodiscard]]="

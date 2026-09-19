@@ -36,18 +36,17 @@ void TabController::createNewNote() {
 }
 
 void TabController::updateNoteContent(int id, const QString& content) {
-    // Linear scan of in-memory cache to find target note.
-    // For small scratchpad sets (typically < 50 notes), vector iteration avoids map overhead.
+    bool found = false;
     for (auto& note : m_notes) {
         if (note.id == id) {
-            // Step 1: Update in-memory content cache for immediate consistency.
             note.content = content;
-
-            // Step 2: Write-through update to SQLite database.
-            infrastructure::DatabaseManager::instance().saveNote(note);
+            bool ok = infrastructure::DatabaseManager::instance().saveNote(note);
+            qDebug() << "TabController::updateNoteContent found note ID:" << id << "Saved OK:" << ok;
+            found = true;
             break;
         }
     }
+    if (!found) qDebug() << "TabController::updateNoteContent WARNING: note not found in m_notes! ID:" << id;
 }
 
 void TabController::deleteNote(int id) {

@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.16)
+project(TestMD)
+find_package(Qt6 COMPONENTS Widgets REQUIRED)
+set(CMAKE_AUTOMOC ON)
+add_executable(test_md test_md.cpp)
+target_link_libraries(test_md Qt6::Widgets)

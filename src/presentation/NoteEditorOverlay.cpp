@@ -72,14 +72,14 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     
     topBarLayout->addStretch();
     
-    m_copyButton = new QPushButton(card);
-    m_copyButton->setObjectName("copyBtn");
+    m_copyButton = new QPushButton("Copy", card);
+    m_copyButton->setProperty("isToolbarBtn", true);
     m_copyButton->setToolTip("Copy Markdown");
-    m_copyButton->setFixedSize(30, 30);
     m_copyButton->setCursor(Qt::PointingHandCursor);
     
     m_closeButton = new QPushButton("✕", card);
-    m_closeButton->setObjectName("cancelBtn");
+    m_closeButton->setProperty("isToolbarBtn", true);
+    m_closeButton->setObjectName("cancelBtn"); // Keep this to make hover red
     m_closeButton->setFixedSize(30, 30);
     m_closeButton->setCursor(Qt::PointingHandCursor);
     
@@ -217,13 +217,6 @@ void NoteEditorOverlay::onActiveNoteChanged(int noteId) {
                 "QPushButton#btnItalic { font-style: italic; }"
                 "QPushButton#btnUnder { text-decoration: underline; }"
                 "QPushButton#btnStrike { text-decoration: line-through; }"
-                "QPushButton#copyBtn {"
-                "    background-color: transparent; border: none; border-radius: 4px;"
-                "    image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='9' y='9' width='13' height='13' rx='2' ry='2'></rect><path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'></path></svg>\");"
-                "}"
-                "QPushButton#copyBtn:hover {"
-                "    background-color: #3f3f46;"
-                "}"
                 "QPushButton#cancelBtn {"
                 "    background-color: transparent; color: #a1a1aa; border: none; font-weight: bold; font-size: 14px;"
                 "}"
@@ -254,8 +247,9 @@ void NoteEditorOverlay::onActiveNoteChanged(int noteId) {
 void NoteEditorOverlay::onTextChanged() {
     int currentId = m_controller->activeNoteId();
     if (currentId != -1) {
-        // Step 1: Extract document as serialized Markdown string and notify controller
-        m_controller->updateNoteContent(currentId, m_textEdit->toMarkdown());
+        QString md = m_textEdit->toMarkdown();
+        qDebug() << "Saving note ID:" << currentId << "Content Length:" << md.length();
+        m_controller->updateNoteContent(currentId, md);
     }
 }
 

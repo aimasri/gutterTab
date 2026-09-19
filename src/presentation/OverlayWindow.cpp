@@ -7,6 +7,8 @@
 
 #include "GutterStrip.h"
 #include "NoteEditorOverlay.h"
+#include "AppIcon.h"
+#include "SleekDialogs.h"
 #include "../infrastructure/ConfigManager.h"
 
 namespace presentation {
@@ -41,9 +43,12 @@ OverlayWindow::OverlayWindow(domain::TabController* controller, QWidget* parent)
         m_dashboardOverlay = new BentoDashboard(controller, this);
 m_editorOverlay = new NoteEditorOverlay(controller, nullptr);
     
-    // Step 4: Subscribe to domain controller state transitions.
-    connect(m_controller, &domain::TabController::stateChanged, 
+    // Step 7: Wire domain state machine emissions to overlay geometry re-evaluation
+    connect(m_controller, &domain::TabController::stateChanged,
             this, &OverlayWindow::onStateChanged);
+            
+    // Step 8: Setup system tray icon
+    setupTrayIcon();
             
     // Step 5: Start a periodic 50ms timer to poll modifier chords (Ctrl+Shift).
     m_hotkeyTimer = new QTimer(this);
@@ -248,6 +253,23 @@ void OverlayWindow::checkHotkey() {
             }
         }
     }
+}
+void OverlayWindow::setupTrayIcon() {
+    m_trayIcon = new QSystemTrayIcon(AppIcon::createAppIcon(), this);
+    m_trayIcon->setToolTip("gutterTab Daemon");
+    
+    auto* menu = new SleekContextMenu();
+    
+    auto* showAction = menu->addAction("Toggle Dashboard");
+    connect(showAction, &QAction::triggered, [this]() {
+        m_controller->toggleDashboard();
+    });
+    
+    auto* quitAction = menu->addAction("Quit gutterTab");
+    connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+    
+    m_trayIcon->setContextMenu(menu);
+    m_trayIcon->show();
 }
 
 } // namespace presentation

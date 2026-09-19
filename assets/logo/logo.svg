@@ -64,17 +64,4 @@
     EDGE-DOCKED NOTE &amp; PROMPT DAEMON
   </text>
 
-  <!-- Mini Signature Color Palette Accent -->
-  <g transform="translate(341, 595)">
-    <rect x="0"   y="0" width="8" height="3.5" rx="1.75" fill="#06b6d4"/>
-    <rect x="13"  y="0" width="8" height="3.5" rx="1.75" fill="#38bdf8"/>
-    <rect x="26"  y="0" width="8" height="3.5" rx="1.75" fill="#6366f1"/>
-    <rect x="39"  y="0" width="8" height="3.5" rx="1.75" fill="#a855f7"/>
-    <rect x="52"  y="0" width="8" height="3.5" rx="1.75" fill="#ec4899"/>
-    <rect x="65"  y="0" width="8" height="3.5" rx="1.75" fill="#f43f5e"/>
-    <rect x="78"  y="0" width="8" height="3.5" rx="1.75" fill="#fb923c"/>
-    <rect x="91"  y="0" width="8" height="3.5" rx="1.75" fill="#eab308"/>
-    <rect x="104" y="0" width="8" height="3.5" rx="1.75" fill="#10b981"/>
-    <rect x="117" y="0" width="8" height="3.5" rx="1.75" fill="#00f2fe"/>
-  </g>
 </svg>

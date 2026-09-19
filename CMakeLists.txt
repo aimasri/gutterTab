@@ -23,6 +23,7 @@ set(PROJECT_SOURCES
     src/infrastructure/ConfigManager.cpp
     src/infrastructure/DatabaseManager.cpp
     src/domain/TabController.cpp
+    src/presentation/AppIcon.cpp
     src/presentation/OverlayWindow.cpp
     src/presentation/GutterStrip.cpp
     src/presentation/GutterTab.cpp

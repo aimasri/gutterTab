@@ -2,6 +2,7 @@
 
 #include <QWidget>
 #include <QRegion>
+#include <QSystemTrayIcon>
 #include "../domain/TabController.h"
 #include "BentoDashboard.h"
 
@@ -144,6 +145,7 @@ private slots:
      * @param state The newly transitioned domain::TabController::State.
      */
     void onStateChanged(domain::TabController::State state);
+    void setupTrayIcon();
 
 private:
     domain::TabController* m_controller; ///< Non-owning pointer to the domain TabController.
@@ -153,6 +155,7 @@ private:
     BentoDashboard* m_dashboardOverlay;  ///< Child overlay rendering the active note markdown editor.
     QTimer* m_hotkeyTimer;               ///< 50ms polling timer for keyboard modifiers.
     bool m_isHotkeyDown = false;         ///< Cached hotkey modifier status (Ctrl+Shift).
+    QSystemTrayIcon* m_trayIcon;         ///< System tray icon for gutterTab.
     
     // Defines the area that can receive mouse clicks
     QRegion m_solidRegion;               ///< Cached region mask for XShape input bounding.

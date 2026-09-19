@@ -20,7 +20,7 @@ With a simple flick of the mouse to the screen edge, your customized arsenal of 
 - **X11 Shape Click-Through Overlay**: Runs as a full-screen, frameless, transparent overlay using native X11 XShape 1-bit input masking (`XShapeCombineRectangles`). Clicks pass through seamlessly to underlying desktop windows everywhere except on the active tab strips and editor overlay.
 - **Binder Tab Navigation**: Tabs stack vertically along the screen edge with configurable rest (`2px`), hover (`26px`), and peek (`30px`) widths, complete with binder-style overlap layering and smooth property animations.
 - **Multi-Profile Architecture**: Isolate distinct workflows (e.g., Development, Client Notes, System Administration) with unique profiles, each having its own SQLite database, JSON settings, and attachment storage.
-- **Markdown Editor**: Integrated slide-out editor supporting Markdown formatting, real-time persistence, quick clipboard export, and direct clipboard image pasting (auto-saved to the profile's disk attachments folder).
+- **Rich-Text Editor**: Integrated slide-out editor supporting native HTML rich-text formatting (perfectly preserving user spacing and newlines), real-time zero-latency persistence, legacy Markdown clipboard export, and direct clipboard image pasting (auto-saved to the profile's disk attachments folder).
 - **Zero-Latency Database Persistence**: Structured SQLite storage with schema migrations, automatic ordering index updates, and transaction boundaries.
 
 ---

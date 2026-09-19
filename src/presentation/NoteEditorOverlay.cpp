@@ -74,19 +74,15 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     
     topBarLayout->addStretch();
     
-    m_copyButton = new QPushButton("Copy", card);
-    m_copyButton->setProperty("isToolbarBtn", "true");
-    m_copyButton->setToolTip("Copy Markdown");
-    m_copyButton->setCursor(Qt::PointingHandCursor);
+    m_copyButton = createToolbarBtn("⧉");
+    m_copyButton->setObjectName("copyBtn");
+    m_copyButton->setToolTip("Copy Content");
     
-    m_closeButton = new QPushButton("✕", card);
-    m_closeButton->setProperty("isToolbarBtn", "true");
-    m_closeButton->setObjectName("cancelBtn"); // Keep this to make hover red
-    m_closeButton->setFixedSize(30, 30);
-    m_closeButton->setCursor(Qt::PointingHandCursor);
+    m_closeButton = createToolbarBtn("✕");
+    m_closeButton->setObjectName("cancelBtn");
+    m_closeButton->setToolTip("Close Note");
     
     topBarLayout->addWidget(m_copyButton);
-    topBarLayout->addSpacing(4);
     topBarLayout->addWidget(m_closeButton);
     
     cardLayout->addLayout(topBarLayout);

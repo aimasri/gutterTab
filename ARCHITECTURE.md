@@ -30,7 +30,7 @@ This document outlines the architectural specifications, component boundaries, a
 ### 1.1 Domain Layer (`src/domain/`)
 - **Responsibility**: Houses business entities and orchestrates application state transitions.
 - **Components**:
-  - `Note`: An entity model representing a note/tab with properties for identity, title, Markdown body, tab color, sync ID, and vertical display order (`sort_order`).
+  - `Note`: An entity model representing a note/tab with properties for identity, title, Rich-Text HTML body, tab color, sync ID, and vertical display order (`sort_order`).
   - `TabController`: Central state machine (`enum class State { IDLE, PEEKING, OPEN }`). Maintains an in-memory cache of notes, coordinates note CRUD operations, and notifies subscribers via Qt signals (`stateChanged`, `notesLoaded`, `activeNoteChanged`).
 - **Invariants**: Contains zero direct dependencies on UI widgets. Communicates with the presentation layer strictly through Qt signals and slots.
 
@@ -47,8 +47,8 @@ This document outlines the architectural specifications, component boundaries, a
   - `OverlayWindow`: A full-screen transparent widget acting as the root canvas. It integrates with X11 via the XShape extension to ensure mouse click pass-through to underlying applications.
   - `GutterStrip`: A vertical layout container anchored to the screen edge that positions and stacks tabs, calculates binder overlaps, manages collapse timers, and handles note reordering.
   - `GutterTab`: Individual tab widget with rotated text rendering (-90 degrees), width animations (`QPropertyAnimation`), and contextual action menus.
-  - `NoteEditorOverlay`: Slide-in editor overlay providing Markdown formatting actions and auto-saving text inputs.
-  - `MarkdownEditor`: Custom `QTextEdit` subclass intercepting clipboard MIME data to save pasted images directly to the active profile's attachment directory.
+  - `NoteEditorOverlay`: Slide-in editor overlay providing rich-text formatting actions and zero-latency auto-saving text inputs.
+  - `MarkdownEditor`: Custom `QTextEdit` subclass handling rich-text storage while intercepting clipboard MIME data to save pasted images directly to the active profile's attachment directory.
   - `ProfilePickerWindow` & `SleekDialogs`: Frameless, dark-mode modal dialogs for switching profiles, editing metadata, and selecting screen edges.
 
 ---

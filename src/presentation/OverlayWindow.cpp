@@ -207,7 +207,9 @@ void OverlayWindow::mousePressEvent(QMouseEvent* event) {
  */
 void OverlayWindow::onStateChanged(domain::TabController::State state) {
     if (state == domain::TabController::State::DASHBOARD) {
-        m_dashboardOverlay->showDashboard(m_gutterStrip->geometry());
+        QRect origin = m_gutterStrip->geometry();
+        origin.setHeight(50);
+        m_dashboardOverlay->showDashboard(origin);
     } else {
         if (m_dashboardOverlay && m_dashboardOverlay->isVisible()) {
             m_dashboardOverlay->hideDashboard();

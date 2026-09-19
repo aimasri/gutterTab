@@ -135,7 +135,8 @@ void GutterStrip::updateTabs() {
     connect(m_dashboardBtn, &DashboardButton::hovered, this, [this]() {
         auto& config = infrastructure::ConfigManager::instance().config();
         m_collapseTimer->stop();
-        if (m_controller->currentState() != domain::TabController::State::OPEN) {
+        if (m_controller->currentState() != domain::TabController::State::OPEN &&
+            m_controller->currentState() != domain::TabController::State::DASHBOARD) {
             m_controller->setState(domain::TabController::State::PEEKING);
             m_dashboardBtn->animateToWidth(config.gutterPeekWidth);
             for (auto tab : m_tabs) {
@@ -145,7 +146,8 @@ void GutterStrip::updateTabs() {
     });
     connect(m_dashboardBtn, &DashboardButton::unhovered, this, [this]() {
         auto& config = infrastructure::ConfigManager::instance().config();
-        if (m_controller->currentState() != domain::TabController::State::OPEN) {
+        if (m_controller->currentState() != domain::TabController::State::OPEN &&
+            m_controller->currentState() != domain::TabController::State::DASHBOARD) {
             if (!m_dialogOpen) m_collapseTimer->start();
         }
     });
@@ -362,7 +364,8 @@ void GutterStrip::enterEvent(QEnterEvent* event) {
 void GutterStrip::leaveEvent(QEvent* event) {
     Q_UNUSED(event);
     if (m_dialogOpen) return;
-    if (m_controller->currentState() != domain::TabController::State::OPEN) {
+    if (m_controller->currentState() != domain::TabController::State::OPEN &&
+        m_controller->currentState() != domain::TabController::State::DASHBOARD) {
         m_collapseTimer->start();
     }
 }
@@ -404,7 +407,8 @@ void GutterStrip::onTabHovered(GutterTab* hoveredTab) {
  */
 void GutterStrip::onTabUnhovered(GutterTab* unhoveredTab) {
     auto& config = infrastructure::ConfigManager::instance().config();
-    if (m_controller->currentState() == domain::TabController::State::OPEN) {
+    if (m_controller->currentState() == domain::TabController::State::OPEN ||
+        m_controller->currentState() == domain::TabController::State::DASHBOARD) {
         if (unhoveredTab->noteId() != m_controller->activeNoteId()) {
             unhoveredTab->animateToWidth(config.gutterRestWidth);
         }
@@ -423,7 +427,8 @@ void GutterStrip::onTabUnhovered(GutterTab* unhoveredTab) {
  */
 void GutterStrip::collapseTimerFired() {
     if (m_dialogOpen) return;
-    if (m_controller->currentState() == domain::TabController::State::OPEN) return;
+    if (m_controller->currentState() == domain::TabController::State::OPEN ||
+        m_controller->currentState() == domain::TabController::State::DASHBOARD) return;
     
     if (!rect().contains(mapFromGlobal(QCursor::pos()))) {
         m_controller->setState(domain::TabController::State::IDLE);

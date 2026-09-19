@@ -37,14 +37,16 @@ void BentoDashboard::buildCards() {
 void BentoDashboard::computeMasonryLayout() {
     int margin = 100;
     int gap = 16;
-    int cols = 4;
+    int cols = 6;
     
-    int availWidth = width() - 2 * margin;
+    QScreen* screen = QGuiApplication::primaryScreen();
+    int screenWidth = screen ? screen->geometry().width() : width();
+    int availWidth = screenWidth - 2 * margin;
     int unitW = (availWidth - (cols - 1) * gap) / cols;
     int unitH = unitW; // Squares by default
     
     // Very simple layout packer
-    QVector<QVector<bool>> grid(20, QVector<bool>(cols, false));
+    QVector<QVector<bool>> grid(200, QVector<bool>(cols, false));
     
     for (int i = 0; i < m_cards.size(); ++i) {
         BentoCard* card = m_cards[i];
@@ -60,7 +62,7 @@ void BentoDashboard::computeMasonryLayout() {
         if (hasAttachment) {
             spanW = 2;
             spanH = 2;
-        } else if (plainText.length() > 300) {
+        } else if (plainText.length() > 800) {
             spanW = 2;
             spanH = 1;
         } else if (i % 5 == 0 && cols >= 2) {

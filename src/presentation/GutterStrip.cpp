@@ -128,7 +128,33 @@ void GutterStrip::updateTabs() {
     bool isPeeking = (m_controller->currentState() == domain::TabController::State::PEEKING);
     
     
-    // Add Dashboard button at the top
+    // Add Folders button at the very top
+    m_foldersBtn = new FoldersButton(this);
+    m_layout->addWidget(m_foldersBtn);
+    connect(m_foldersBtn, &FoldersButton::clicked, m_controller, &domain::TabController::toggleFolders);
+    connect(m_foldersBtn, &FoldersButton::hovered, this, [this]() {
+        auto& config = infrastructure::ConfigManager::instance().config();
+        m_collapseTimer->stop();
+        if (m_controller->currentState() != domain::TabController::State::OPEN &&
+            m_controller->currentState() != domain::TabController::State::DASHBOARD &&
+            m_controller->currentState() != domain::TabController::State::FOLDERS) {
+            m_controller->setState(domain::TabController::State::PEEKING);
+            m_foldersBtn->animateToWidth(config.gutterPeekWidth);
+            if (m_dashboardBtn) m_dashboardBtn->animateToWidth(config.gutterHoverWidth);
+            for (auto tab : m_tabs) {
+                tab->animateToWidth(config.gutterHoverWidth);
+            }
+        }
+    });
+    connect(m_foldersBtn, &FoldersButton::unhovered, this, [this]() {
+        if (m_controller->currentState() != domain::TabController::State::OPEN &&
+            m_controller->currentState() != domain::TabController::State::DASHBOARD &&
+            m_controller->currentState() != domain::TabController::State::FOLDERS) {
+            if (!m_dialogOpen) m_collapseTimer->start();
+        }
+    });
+
+    // Add Dashboard button below Folders button
     m_dashboardBtn = new DashboardButton(this);
     m_layout->addWidget(m_dashboardBtn);
     connect(m_dashboardBtn, &DashboardButton::clicked, m_controller, &domain::TabController::toggleDashboard);
@@ -136,9 +162,11 @@ void GutterStrip::updateTabs() {
         auto& config = infrastructure::ConfigManager::instance().config();
         m_collapseTimer->stop();
         if (m_controller->currentState() != domain::TabController::State::OPEN &&
-            m_controller->currentState() != domain::TabController::State::DASHBOARD) {
+            m_controller->currentState() != domain::TabController::State::DASHBOARD &&
+            m_controller->currentState() != domain::TabController::State::FOLDERS) {
             m_controller->setState(domain::TabController::State::PEEKING);
             m_dashboardBtn->animateToWidth(config.gutterPeekWidth);
+            if (m_foldersBtn) m_foldersBtn->animateToWidth(config.gutterHoverWidth);
             for (auto tab : m_tabs) {
                 tab->animateToWidth(config.gutterHoverWidth);
             }
@@ -147,7 +175,8 @@ void GutterStrip::updateTabs() {
     connect(m_dashboardBtn, &DashboardButton::unhovered, this, [this]() {
         auto& config = infrastructure::ConfigManager::instance().config();
         if (m_controller->currentState() != domain::TabController::State::OPEN &&
-            m_controller->currentState() != domain::TabController::State::DASHBOARD) {
+            m_controller->currentState() != domain::TabController::State::DASHBOARD &&
+            m_controller->currentState() != domain::TabController::State::FOLDERS) {
             if (!m_dialogOpen) m_collapseTimer->start();
         }
     });
@@ -301,6 +330,7 @@ void GutterStrip::onActiveNoteChanged(int noteId) {
         if (rect().contains(mapFromGlobal(QCursor::pos()))) {
             m_controller->setState(domain::TabController::State::PEEKING);
             if (m_dashboardBtn) m_dashboardBtn->animateToWidth(config.gutterHoverWidth);
+            if (m_foldersBtn) m_foldersBtn->animateToWidth(config.gutterHoverWidth);
             for (auto tab : m_tabs) {
                 tab->animateToWidth(config.gutterHoverWidth);
             }
@@ -310,6 +340,7 @@ void GutterStrip::onActiveNoteChanged(int noteId) {
         } else {
             m_controller->setState(domain::TabController::State::IDLE);
             if (m_dashboardBtn) m_dashboardBtn->animateToWidth(config.gutterRestWidth);
+            if (m_foldersBtn) m_foldersBtn->animateToWidth(config.gutterRestWidth);
             for (auto tab : m_tabs) {
                 tab->animateToWidth(config.gutterRestWidth);
             }
@@ -345,9 +376,12 @@ void GutterStrip::enterEvent(QEnterEvent* event) {
     setAcceptDrops(true);
     emit triggerAreaChanged();
     
-    if (m_controller->currentState() != domain::TabController::State::OPEN) {
+    if (m_controller->currentState() != domain::TabController::State::OPEN &&
+        m_controller->currentState() != domain::TabController::State::DASHBOARD &&
+        m_controller->currentState() != domain::TabController::State::FOLDERS) {
         m_controller->setState(domain::TabController::State::PEEKING);
         if (m_dashboardBtn) m_dashboardBtn->animateToWidth(config.gutterHoverWidth);
+        if (m_foldersBtn) m_foldersBtn->animateToWidth(config.gutterHoverWidth);
         for (auto tab : m_tabs) {
             tab->animateToWidth(config.gutterHoverWidth);
         }
@@ -365,7 +399,8 @@ void GutterStrip::leaveEvent(QEvent* event) {
     Q_UNUSED(event);
     if (m_dialogOpen) return;
     if (m_controller->currentState() != domain::TabController::State::OPEN &&
-        m_controller->currentState() != domain::TabController::State::DASHBOARD) {
+        m_controller->currentState() != domain::TabController::State::DASHBOARD &&
+        m_controller->currentState() != domain::TabController::State::FOLDERS) {
         m_collapseTimer->start();
     }
 }
@@ -388,6 +423,7 @@ void GutterStrip::onTabHovered(GutterTab* hoveredTab) {
         m_collapseTimer->stop();
         m_controller->setState(domain::TabController::State::PEEKING);
         if (m_dashboardBtn) m_dashboardBtn->animateToWidth(config.gutterHoverWidth);
+        if (m_foldersBtn) m_foldersBtn->animateToWidth(config.gutterHoverWidth);
         for (auto tab : m_tabs) {
             if (tab == hoveredTab) {
                 tab->animateToWidth(config.gutterPeekWidth);
@@ -408,7 +444,8 @@ void GutterStrip::onTabHovered(GutterTab* hoveredTab) {
 void GutterStrip::onTabUnhovered(GutterTab* unhoveredTab) {
     auto& config = infrastructure::ConfigManager::instance().config();
     if (m_controller->currentState() == domain::TabController::State::OPEN ||
-        m_controller->currentState() == domain::TabController::State::DASHBOARD) {
+        m_controller->currentState() == domain::TabController::State::DASHBOARD ||
+        m_controller->currentState() == domain::TabController::State::FOLDERS) {
         if (unhoveredTab->noteId() != m_controller->activeNoteId()) {
             unhoveredTab->animateToWidth(config.gutterRestWidth);
         }
@@ -428,12 +465,14 @@ void GutterStrip::onTabUnhovered(GutterTab* unhoveredTab) {
 void GutterStrip::collapseTimerFired() {
     if (m_dialogOpen) return;
     if (m_controller->currentState() == domain::TabController::State::OPEN ||
-        m_controller->currentState() == domain::TabController::State::DASHBOARD) return;
+        m_controller->currentState() == domain::TabController::State::DASHBOARD ||
+        m_controller->currentState() == domain::TabController::State::FOLDERS) return;
     
     if (!rect().contains(mapFromGlobal(QCursor::pos()))) {
         m_controller->setState(domain::TabController::State::IDLE);
         auto& config = infrastructure::ConfigManager::instance().config();
         if (m_dashboardBtn) m_dashboardBtn->animateToWidth(config.gutterRestWidth);
+        if (m_foldersBtn) m_foldersBtn->animateToWidth(config.gutterRestWidth);
         for (auto tab : m_tabs) {
             tab->animateToWidth(config.gutterRestWidth);
         }

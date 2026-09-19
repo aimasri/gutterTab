@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QVector>
 #include "Note.h"
+#include "FolderShortcut.h"
 
 namespace domain {
 
@@ -46,7 +47,9 @@ public:
         /// @brief Active editing state; a note is open in NoteEditorOverlay with background dimming enabled.
         OPEN,
         /// @brief Dashboard mode; all notes are displayed in a full-screen bento grid.
-        DASHBOARD
+        DASHBOARD,
+        /// @brief Folders mode; shortcuts to user directories are displayed in an overlay card.
+        FOLDERS
     };
 
     /**
@@ -67,6 +70,7 @@ public:
      * - If the database is empty or uninitialized, m_notes becomes empty; handled gracefully by the UI.
      */
     void loadNotes();
+    void loadFolders();
 
     /**
      * @brief Provides read-only access to the in-memory cache of domain notes.
@@ -77,6 +81,8 @@ public:
      */
     const QVector<Note>& notes() const { return m_notes; }
     
+    const QVector<FolderShortcut>& folders() const { return m_folders; }
+
     /**
      * @brief Creates a new default note, persists it to storage, reloads the cache, and activates it.
      * 
@@ -88,6 +94,9 @@ public:
      * - If DatabaseManager::saveNote fails, the note is neither cached nor opened, preventing UI desync.
      */
     void createNewNote();
+    
+    void createFolderShortcut(const QString& name, const QString& path, const QString& iconPath);
+    void updateFolderShortcut(int id, const QString& name, const QString& path, const QString& iconPath);
 
     /**
      * @brief Updates the Markdown content of an existing note both in-memory and on disk.
@@ -111,6 +120,8 @@ public:
      * - If the database deletion fails, in-memory state remains untouched.
      */
     void deleteNote(int id);
+    
+    void deleteFolderShortcut(int id);
 
     /**
      * @brief Reorders a note to a target index position and synchronizes sort orders.
@@ -127,7 +138,7 @@ public:
     /**
      * @brief Retrieves the current state of the state machine.
      * 
-     * @return Current State (IDLE, PEEKING, OPEN, or DASHBOARD).
+     * @return Current State (IDLE, PEEKING, OPEN, DASHBOARD, or FOLDERS).
      */
     State currentState() const { return m_state; }
 
@@ -172,6 +183,8 @@ public slots:
      * @brief Toggles between DASHBOARD state and IDLE state.
      */
     void toggleDashboard();
+    
+    void toggleFolders();
 
 signals:
     /**
@@ -185,6 +198,8 @@ signals:
      * @brief Emitted after notes have been fetched from the database and cached in m_notes.
      */
     void notesLoaded();
+    
+    void foldersLoaded();
 
     /**
      * @brief Emitted when the active note selection changes.
@@ -202,6 +217,8 @@ private:
 
     /// @brief Cached list of notes loaded from the database, sorted by sort_order.
     QVector<Note> m_notes;
+    
+    QVector<FolderShortcut> m_folders;
 };
 
 } // namespace domain

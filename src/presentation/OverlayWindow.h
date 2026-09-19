@@ -5,6 +5,7 @@
 #include <QSystemTrayIcon>
 #include "../domain/TabController.h"
 #include "BentoDashboard.h"
+#include "FoldersOverlay.h"
 
 namespace presentation {
 
@@ -152,7 +153,8 @@ private:
     
     GutterStrip* m_gutterStrip;          ///< Child widget rendering the stack of note tabs.
     NoteEditorOverlay* m_editorOverlay;
-    BentoDashboard* m_dashboardOverlay;  ///< Child overlay rendering the active note markdown editor.
+    BentoDashboard* m_dashboardOverlay;
+    FoldersOverlay* m_foldersOverlay;    ///< Child overlay for folders management.
     QTimer* m_hotkeyTimer;               ///< 50ms polling timer for keyboard modifiers.
     bool m_isHotkeyDown = false;         ///< Cached hotkey modifier status (Ctrl+Shift).
     QSystemTrayIcon* m_trayIcon;         ///< System tray icon for gutterTab.

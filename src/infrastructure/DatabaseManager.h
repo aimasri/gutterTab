@@ -6,6 +6,7 @@
 #include <optional>
 
 #include "../domain/Note.h"
+#include "../domain/FolderShortcut.h"
 
 namespace infrastructure {
 
@@ -79,6 +80,12 @@ public:
      * @note If draggedId is not found or already at targetIndex, exits early without executing queries.
      */
     void reorderNotes(int draggedId, int targetIndex);
+
+    // Folder Shortcuts CRUD
+    std::optional<domain::FolderShortcut> getFolderShortcut(int id);
+    QVector<domain::FolderShortcut> getAllFolderShortcuts();
+    bool saveFolderShortcut(domain::FolderShortcut& shortcut);
+    bool deleteFolderShortcut(int id);
 
 private:
     DatabaseManager() = default;

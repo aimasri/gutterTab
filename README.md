@@ -21,6 +21,7 @@ With a simple flick of the mouse to the screen edge, your customized arsenal of 
 - **Binder Tab Navigation**: Tabs stack vertically along the screen edge with configurable rest (`2px`), hover (`26px`), and peek (`30px`) widths, complete with binder-style overlap layering and smooth property animations.
 - **Multi-Profile Architecture**: Isolate distinct workflows (e.g., Development, Client Notes, System Administration) with unique profiles, each having its own SQLite database, JSON settings, and attachment storage.
 - **Rich-Text Editor**: Integrated slide-out editor supporting native HTML rich-text formatting (perfectly preserving user spacing and newlines), real-time zero-latency persistence, legacy Markdown clipboard export, and direct clipboard image pasting (auto-saved to the profile's disk attachments folder).
+- **Folder Shortcuts Overlay**: Quick access to your project directories natively. A dedicated gutter button opens a styled masonry grid of alphabetical folder shortcuts that let you set custom brand mark icons. Clicking a folder opens it instantly in your native X11 file manager.
 - **Zero-Latency Database Persistence**: Structured SQLite storage with schema migrations, automatic ordering index updates, and transaction boundaries.
 
 ---
@@ -33,7 +34,8 @@ With a simple flick of the mouse to the screen edge, your customized arsenal of 
 src/
 ├── domain/            # Core business models and state machines
 │   ├── Note.h         # Note entity definition and attributes
-│   ├── TabController.h# Central domain state coordinator (IDLE, PEEKING, OPEN)
+│   ├── FolderShortcut.h # Folder entity definition and path pointers
+│   ├── TabController.h# Central domain state coordinator (IDLE, PEEKING, OPEN, DASHBOARD, FOLDERS)
 │   └── TabController.cpp
 ├── infrastructure/    # Concrete system implementations and data storage
 │   ├── ConfigManager.h# Profile registry and per-profile JSON configuration
@@ -44,6 +46,10 @@ src/
     ├── OverlayWindow.h# Full-screen transparent widget managing XShape input masks
     ├── GutterStrip.h  # Vertical stacking container managing tab geometry & Z-ordering
     ├── GutterTab.h    # Individual tab widget with rotated text painting and animations
+    ├── DashboardButton.h # Button for Bento dashboard layout
+    ├── FoldersButton.h # Button for Folder shortcuts layout
+    ├── BentoDashboard.h # Masonry grid overlay for notes
+    ├── FoldersOverlay.h # Full-screen overlay to manage folder paths natively
     ├── NoteEditorOverlay.h # Slide-in editor container with formatting actions
     ├── MarkdownEditor.h    # QTextEdit subclass handling clipboard images and Markdown
     ├── ProfilePickerWindow.h # Standalone modal dialog for profile selection/management

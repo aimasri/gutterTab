@@ -40,8 +40,9 @@ OverlayWindow::OverlayWindow(domain::TabController* controller, QWidget* parent)
     // Step 3: Instantiate child components within the presentation layer.
     m_gutterStrip = new GutterStrip(controller, this);
     connect(m_gutterStrip, &GutterStrip::triggerAreaChanged, this, [this]() { updateGutterGeometry(); });
-        m_dashboardOverlay = new BentoDashboard(controller, this);
-m_editorOverlay = new NoteEditorOverlay(controller, nullptr);
+    m_dashboardOverlay = new BentoDashboard(controller, this);
+    m_editorOverlay = new NoteEditorOverlay(controller, nullptr);
+    m_foldersOverlay = new FoldersOverlay(controller, nullptr);
     
     // Step 7: Wire domain state machine emissions to overlay geometry re-evaluation
     connect(m_controller, &domain::TabController::stateChanged,
@@ -100,8 +101,9 @@ void OverlayWindow::paintEvent(QPaintEvent* event) {
     
     qDebug() << "PAINT EVENT! State:" << (int)m_controller->currentState() << "Rect:" << rect() << "Mask empty:" << mask().isEmpty();
     
-    if (m_controller->currentState() == domain::TabController::State::OPEN) {
-        // Step 1: In OPEN state, render semi-transparent backdrop for focus dimming.
+    if (m_controller->currentState() == domain::TabController::State::OPEN ||
+        m_controller->currentState() == domain::TabController::State::FOLDERS) {
+        // Step 1: In OPEN/FOLDERS state, render semi-transparent backdrop for focus dimming.
         painter.fillRect(rect(), QColor(0, 0, 0, 150));
     } else if (m_controller->currentState() == domain::TabController::State::DASHBOARD) {
         // Dashboard has its own background dimming in BentoDashboard widget
@@ -149,8 +151,9 @@ void OverlayWindow::updateGutterGeometry() {
 
     // Step 3: Compute coordinate spaces based on active state.
     if (m_controller->currentState() == domain::TabController::State::OPEN || 
-        m_controller->currentState() == domain::TabController::State::DASHBOARD) {
-        // OPEN/DASHBOARD state: Span full primary screen for backdrop dimming and modal click interception.
+        m_controller->currentState() == domain::TabController::State::DASHBOARD ||
+        m_controller->currentState() == domain::TabController::State::FOLDERS) {
+        // OPEN/DASHBOARD/FOLDERS state: Span full primary screen for backdrop dimming and modal click interception.
         setGeometry(screenRect);
         if (config.edge == infrastructure::Config::Edge::Left) {
             m_gutterStrip->setGeometry(0, 0, w, height());
@@ -197,6 +200,8 @@ void OverlayWindow::mousePressEvent(QMouseEvent* event) {
         m_controller->closeNote();
     } else if (m_controller->currentState() == domain::TabController::State::DASHBOARD) {
         m_controller->toggleDashboard();
+    } else if (m_controller->currentState() == domain::TabController::State::FOLDERS) {
+        m_controller->toggleFolders();
     }
     QWidget::mousePressEvent(event);
 }
@@ -250,6 +255,14 @@ void OverlayWindow::checkHotkey() {
                 m_editorOverlay->hide();
             } else {
                 m_editorOverlay->show();
+            }
+        }
+        
+        if (m_controller->currentState() == domain::TabController::State::FOLDERS && m_foldersOverlay) {
+            if (isDown) {
+                m_foldersOverlay->hide();
+            } else {
+                m_foldersOverlay->show();
             }
         }
     }

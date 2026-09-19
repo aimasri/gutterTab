@@ -22,18 +22,37 @@ set(PROJECT_SOURCES
     src/main.cpp
     src/infrastructure/ConfigManager.cpp
     src/infrastructure/DatabaseManager.cpp
+    src/domain/Note.h
+    src/domain/FolderShortcut.h
+    src/domain/TabController.h
     src/domain/TabController.cpp
+    src/presentation/AppIcon.h
     src/presentation/AppIcon.cpp
+    src/presentation/OverlayWindow.h
     src/presentation/OverlayWindow.cpp
+    src/presentation/GutterStrip.h
     src/presentation/GutterStrip.cpp
+    src/presentation/GutterTab.h
     src/presentation/GutterTab.cpp
+    src/presentation/DashboardButton.h
     src/presentation/DashboardButton.cpp
+    src/presentation/FoldersButton.h
+    src/presentation/FoldersButton.cpp
+    src/presentation/BentoCard.h
     src/presentation/BentoCard.cpp
+    src/presentation/BentoDashboard.h
     src/presentation/BentoDashboard.cpp
+    src/presentation/FoldersOverlay.h
+    src/presentation/FoldersOverlay.cpp
+    src/presentation/SleekDialogs.h
     src/presentation/SleekDialogs.cpp
+    src/presentation/ProfilePickerWindow.h
     src/presentation/ProfilePickerWindow.cpp
+    src/presentation/SleekSideChooserDialog.h
     src/presentation/SleekSideChooserDialog.cpp
+    src/presentation/NoteEditorOverlay.h
     src/presentation/NoteEditorOverlay.cpp
+    src/presentation/MarkdownEditor.h
     src/presentation/MarkdownEditor.cpp
 )
 

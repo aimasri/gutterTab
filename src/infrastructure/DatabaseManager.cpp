@@ -102,6 +102,21 @@ bool DatabaseManager::createTables() {
         return false;
     }
     
+    // Create folder_shortcuts table
+    success = query.exec(
+        "CREATE TABLE IF NOT EXISTS folder_shortcuts ("
+        "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+        "name TEXT NOT NULL, "
+        "path TEXT NOT NULL, "
+        "icon_path TEXT"
+        ")"
+    );
+
+    if (!success) {
+        qCritical() << "Couldn't create folder_shortcuts table:" << query.lastError().text();
+        return false;
+    }
+    
     return true;
 }
 
@@ -264,6 +279,77 @@ void DatabaseManager::reorderNotes(int draggedId, int targetIndex) {
         query.exec();
     }
     m_db.commit();
+}
+
+std::optional<domain::FolderShortcut> DatabaseManager::getFolderShortcut(int id) {
+    QSqlQuery query(m_db);
+    query.prepare("SELECT name, path, icon_path FROM folder_shortcuts WHERE id = :id");
+    query.bindValue(":id", id);
+    
+    if (query.exec() && query.next()) {
+        domain::FolderShortcut shortcut;
+        shortcut.id = id;
+        shortcut.name = query.value("name").toString();
+        shortcut.path = query.value("path").toString();
+        shortcut.iconPath = query.value("icon_path").toString();
+        return shortcut;
+    }
+    return std::nullopt;
+}
+
+QVector<domain::FolderShortcut> DatabaseManager::getAllFolderShortcuts() {
+    QVector<domain::FolderShortcut> shortcuts;
+    // Order alphabetically by name (case insensitive ideally)
+    QSqlQuery query("SELECT id, name, path, icon_path FROM folder_shortcuts ORDER BY name COLLATE NOCASE ASC", m_db);
+    
+    while (query.next()) {
+        domain::FolderShortcut shortcut;
+        shortcut.id = query.value("id").toInt();
+        shortcut.name = query.value("name").toString();
+        shortcut.path = query.value("path").toString();
+        shortcut.iconPath = query.value("icon_path").toString();
+        shortcuts.push_back(shortcut);
+    }
+    return shortcuts;
+}
+
+bool DatabaseManager::saveFolderShortcut(domain::FolderShortcut& shortcut) {
+    QSqlQuery query(m_db);
+    
+    if (shortcut.id <= 0) {
+        query.prepare("INSERT INTO folder_shortcuts (name, path, icon_path) VALUES (:name, :path, :icon_path)");
+        query.bindValue(":name", shortcut.name);
+        query.bindValue(":path", shortcut.path);
+        query.bindValue(":icon_path", shortcut.iconPath);
+        
+        if (query.exec()) {
+            shortcut.id = query.lastInsertId().toInt();
+            return true;
+        }
+    } else {
+        query.prepare("UPDATE folder_shortcuts SET name = :name, path = :path, icon_path = :icon_path WHERE id = :id");
+        query.bindValue(":name", shortcut.name);
+        query.bindValue(":path", shortcut.path);
+        query.bindValue(":icon_path", shortcut.iconPath);
+        query.bindValue(":id", shortcut.id);
+        
+        return query.exec();
+    }
+    
+    qCritical() << "Failed to save folder shortcut:" << query.lastError().text();
+    return false;
+}
+
+bool DatabaseManager::deleteFolderShortcut(int id) {
+    QSqlQuery query(m_db);
+    query.prepare("DELETE FROM folder_shortcuts WHERE id = :id");
+    query.bindValue(":id", id);
+    
+    if (!query.exec()) {
+        qCritical() << "Failed to delete folder shortcut:" << query.lastError().text();
+        return false;
+    }
+    return true;
 }
 
 } // namespace infrastructure

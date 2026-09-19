@@ -6,6 +6,7 @@
 #include "../domain/TabController.h"
 #include "GutterTab.h"
 #include "DashboardButton.h"
+#include "FoldersButton.h"
 
 namespace presentation {
 
@@ -191,7 +192,8 @@ private slots:
 private:
     domain::TabController* m_controller; ///< Non-owning pointer to the domain TabController.
     QVBoxLayout* m_layout;               ///< Layout managing the vertical stacking of tabs and spacers.
-    DashboardButton* m_dashboardBtn;
+    FoldersButton* m_foldersBtn = nullptr;
+    DashboardButton* m_dashboardBtn = nullptr;
     QVector<GutterTab*> m_tabs;          ///< Ordered list of active child GutterTab widgets.
     
     QTimer* m_collapseTimer;             ///< Single-shot debounce timer for collapsing the strip on mouse leave.

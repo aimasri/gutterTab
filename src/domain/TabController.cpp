@@ -17,6 +17,11 @@ void TabController::loadNotes() {
     emit notesLoaded();
 }
 
+void TabController::loadFolders() {
+    m_folders = infrastructure::DatabaseManager::instance().getAllFolderShortcuts();
+    emit foldersLoaded();
+}
+
 void TabController::createNewNote() {
     // Step 1: Assemble a new Note entity with initial default parameters.
     Note newNote;
@@ -33,6 +38,34 @@ void TabController::createNewNote() {
         // Step 4: Immediately transition the state machine to State::OPEN and activate the new note.
         openNote(newNote.id);
     }
+}
+
+void TabController::createFolderShortcut(const QString& name, const QString& path, const QString& iconPath) {
+    FolderShortcut shortcut;
+    shortcut.name = name;
+    shortcut.path = path;
+    shortcut.iconPath = iconPath;
+    
+    if (infrastructure::DatabaseManager::instance().saveFolderShortcut(shortcut)) {
+        loadFolders();
+    }
+}
+
+void TabController::updateFolderShortcut(int id, const QString& name, const QString& path, const QString& iconPath) {
+    bool found = false;
+    for (auto& shortcut : m_folders) {
+        if (shortcut.id == id) {
+            shortcut.name = name;
+            shortcut.path = path;
+            shortcut.iconPath = iconPath;
+            if (infrastructure::DatabaseManager::instance().saveFolderShortcut(shortcut)) {
+                loadFolders();
+            }
+            found = true;
+            break;
+        }
+    }
+    if (!found) qDebug() << "TabController::updateFolderShortcut WARNING: shortcut not found! ID:" << id;
 }
 
 void TabController::updateNoteContent(int id, const QString& content) {
@@ -60,6 +93,12 @@ void TabController::deleteNote(int id) {
 
         // Step 3: Refresh in-memory cache to reflect the removal and emit notesLoaded() to update UI.
         loadNotes();
+    }
+}
+
+void TabController::deleteFolderShortcut(int id) {
+    if (infrastructure::DatabaseManager::instance().deleteFolderShortcut(id)) {
+        loadFolders();
     }
 }
 
@@ -108,6 +147,17 @@ void TabController::toggleDashboard() {
             closeNote();
         }
         setState(State::DASHBOARD);
+    }
+}
+
+void TabController::toggleFolders() {
+    if (m_state == State::FOLDERS) {
+        setState(State::IDLE);
+    } else {
+        if (m_state == State::OPEN) {
+            closeNote();
+        }
+        setState(State::FOLDERS);
     }
 }
 

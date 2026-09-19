@@ -1,5 +1,7 @@
 #include "BentoDashboard.h"
 #include <QPainter>
+#include <QGuiApplication>
+#include <QScreen>
 #include <QTimer>
 #include <QPropertyAnimation>
 #include <QMouseEvent>

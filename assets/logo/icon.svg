@@ -11,7 +11,7 @@
     <linearGradient id="g9" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#34d399"/><stop offset="100%" stop-color="#10b981"/></linearGradient>
     <linearGradient id="spineGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#ec4899"/></linearGradient>
   </defs>
-  <rect x="10" y="10" width="236" height="236" rx="56" ry="56" fill="url(#bgGrad)" stroke="#ffffff" stroke-opacity="0.12" stroke-width="2.5"/>
+  <rect x="10" y="10" width="236" height="236" rx="56" ry="56" fill="url(#bgGrad)"/>
   <rect x="36" y="36" width="162" height="64" rx="8" ry="8" fill="url(#g1)"/>
   <rect x="36"  y="108" width="77" height="50" rx="7" ry="7" fill="url(#g3)"/>
   <rect x="121" y="108" width="77" height="50" rx="7" ry="7" fill="url(#g5)"/>

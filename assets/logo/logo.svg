@@ -47,7 +47,7 @@
     <rect x="14" y="24" width="332" height="332" rx="78.75" ry="78.75" fill="#000000" opacity="0.65" filter="url(#shadowBlur)"/>
 
     <!-- Squircle Base -->
-    <rect x="14" y="14" width="332" height="332" rx="78.75" ry="78.75" fill="url(#iconBgGrad)" stroke="#ffffff" stroke-opacity="0.16" stroke-width="3.2"/>
+    <rect x="14" y="14" width="332" height="332" rx="78.75" ry="78.75" fill="url(#iconBgGrad)"/>
 
     <g transform="scale(1.40625)">
       <rect x="36" y="36" width="162" height="64" rx="8" ry="8" fill="url(#g1)"/>

@@ -57,6 +57,8 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     
     auto* btnBullet = createToolbarBtn("•"); btnBullet->setObjectName("btnBullet");
     auto* btnNum = createToolbarBtn("1."); btnNum->setObjectName("btnNum");
+    auto* btnSpace = createToolbarBtn("Space"); btnSpace->setObjectName("btnSpace");
+    btnSpace->setToolTip("Insert Hard Line Break");
     
     topBarLayout->addWidget(btnBold);
     topBarLayout->addWidget(btnItalic);
@@ -69,16 +71,18 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     topBarLayout->addSpacing(12);
     topBarLayout->addWidget(btnBullet);
     topBarLayout->addWidget(btnNum);
+    topBarLayout->addSpacing(12);
+    topBarLayout->addWidget(btnSpace);
     
     topBarLayout->addStretch();
     
     m_copyButton = new QPushButton("Copy", card);
-    m_copyButton->setProperty("isToolbarBtn", true);
+    m_copyButton->setProperty("isToolbarBtn", "true");
     m_copyButton->setToolTip("Copy Markdown");
     m_copyButton->setCursor(Qt::PointingHandCursor);
     
     m_closeButton = new QPushButton("✕", card);
-    m_closeButton->setProperty("isToolbarBtn", true);
+    m_closeButton->setProperty("isToolbarBtn", "true");
     m_closeButton->setObjectName("cancelBtn"); // Keep this to make hover red
     m_closeButton->setFixedSize(30, 30);
     m_closeButton->setCursor(Qt::PointingHandCursor);
@@ -105,6 +109,7 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     connect(btnH3, &QPushButton::clicked, this, &NoteEditorOverlay::onFormatH3);
     connect(btnBullet, &QPushButton::clicked, this, &NoteEditorOverlay::onFormatBulletList);
     connect(btnNum, &QPushButton::clicked, this, &NoteEditorOverlay::onFormatNumberedList);
+    connect(btnSpace, &QPushButton::clicked, this, &NoteEditorOverlay::onFormatSpace);
     
     // Step 7: Connect window actions and content change monitoring
     connect(m_copyButton, &QPushButton::clicked, this, &NoteEditorOverlay::onCopyToClipboard);
@@ -133,7 +138,7 @@ NoteEditorOverlay::~NoteEditorOverlay() {}
  */
 QPushButton* NoteEditorOverlay::createToolbarBtn(const QString& text) {
     auto* btn = new QPushButton(text, this);
-    btn->setProperty("isToolbarBtn", true);
+    btn->setProperty("isToolbarBtn", "true");
     btn->setFixedSize(30, 30);
     btn->setCursor(Qt::PointingHandCursor);
     return btn;
@@ -401,6 +406,14 @@ void NoteEditorOverlay::onFormatNumberedList() {
     } else {
         cursor.createList(QTextListFormat::ListDecimal);
     }
+    m_textEdit->setFocus();
+}
+
+/**
+ * @brief Inserts a hard HTML break to bypass Markdown empty-line collapsing.
+ */
+void NoteEditorOverlay::onFormatSpace() {
+    m_textEdit->textCursor().insertHtml("&nbsp;<br><br>");
     m_textEdit->setFocus();
 }
 

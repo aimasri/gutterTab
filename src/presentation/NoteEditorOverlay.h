@@ -144,6 +144,9 @@ private slots:
     /** @brief Toggles decimal numbered list formatting on current block. */
     void onFormatNumberedList();
 
+    /** @brief Inserts a hard HTML break to bypass Markdown empty-line collapsing. */
+    void onFormatSpace();
+
 private:
     domain::TabController* m_controller; ///< Observing pointer to domain tab controller.
     

@@ -2,9 +2,16 @@
   <img src="assets/logo/logo.svg" alt="gutterTab Logo" width="400">
 </p>
 
-# gutterTab
+# gutterTab v1.0: High-Performance Linux Edge-Docked Note & Prompt Daemon
 
-`gutterTab` is a high-performance, edge-docked note and prompt management daemon engineered for Linux desktop environments (optimized for Openbox and lightweight window managers). Built with Modern C++17, Qt6, and native X11/XCB systems integration, `gutterTab` provides instant access to context-specific notes, prompt templates, and code snippets through subtle binder-style tabs along the screen border.
+![C++17](https://img.shields.io/badge/C++-17-00599C?style=flat-square&logo=c%2B%2B) ![Qt 6.x](https://img.shields.io/badge/Qt-6.x-41CD52?style=flat-square&logo=qt) ![X11 XCB/EWMH](https://img.shields.io/badge/X11-XCB/EWMH-E95420?style=flat-square&logo=linux)
+![Platform](https://img.shields.io/badge/Platform-Linux%20(Openbox/Debian/Crunchbang++)-333333?style=flat-square) ![License MIT](https://img.shields.io/badge/License-MIT-8A2BE2?style=flat-square)
+
+**gutterTab** is a specialized, bare-metal Linux desktop daemon and markdown scratchpad engineered exclusively for X11 environments. It manages your notes, AI prompt templates, and code snippets behind sleek, razor-thin, animated edge gutters acting as physical binder tabs docking to the side of your display.
+
+Rather than managing chaotic floating sticky notes, alt-tabbing through dozens of open text editors, or relying on cloud-based web apps with high latency, `gutterTab` treats your screen edge as an expansive physical binder. The active note occupies a stunning, slide-out Markdown editor overlay in the center of the display, while the rest of your system remains completely unobstructed and clickable thanks to native X11 XShape 1-bit input masking.
+
+With a simple flick of the mouse to the screen edge, your customized arsenal of context-specific notes instantly cascades open. Click the top-docked **Bento Dashboard** button, and watch your tabs gracefully fly out into a stunning masonry grid layout across your screen for ultimate visibility.
 
 ---
 

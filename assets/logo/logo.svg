@@ -36,19 +36,10 @@
     </filter>
   </defs>
 
-  <rect width="800" height="720" fill="#0d0e15"/>
-
-  <!-- Ambient Glow Behind Icon -->
-  <circle cx="400" cy="240" r="230" fill="url(#ambientGlow)" filter="url(#softGlow)"/>
+  <!-- Transparent Background -->
 
   <!-- ================= ICON SQUIRCLE ================= -->
-  <g transform="translate(220, 60)">
-    <!-- Drop Shadow -->
-    <rect x="14" y="24" width="332" height="332" rx="78.75" ry="78.75" fill="#000000" opacity="0.65" filter="url(#shadowBlur)"/>
-
-    <!-- Squircle Base -->
-    <rect x="14" y="14" width="332" height="332" rx="78.75" ry="78.75" fill="url(#iconBgGrad)"/>
-
+  <g transform="translate(220, 100)">
     <g transform="scale(1.40625)">
       <rect x="36" y="36" width="162" height="64" rx="8" ry="8" fill="url(#g1)"/>
       <rect x="36"  y="108" width="77" height="50" rx="7" ry="7" fill="url(#g3)"/>

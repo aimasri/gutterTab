@@ -12,6 +12,7 @@ public:
     explicit BentoCard(const domain::Note& note, QWidget* parent = nullptr);
 
     void setTargetGeometry(const QRect& rect);
+    const QRect& targetGeometry() const { return m_targetGeometry; }
     void animateToTarget();
     void animateToOrigin(const QRect& origin);
     

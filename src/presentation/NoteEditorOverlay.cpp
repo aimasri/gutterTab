@@ -42,28 +42,10 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     cardLayout->setContentsMargins(16, 16, 16, 16);
     cardLayout->setSpacing(12);
     
-    // Step 3: Build top action bar with copy-markdown and close buttons
-    QHBoxLayout* topLayout = new QHBoxLayout();
-    m_copyButton = new QPushButton(card);
-    m_copyButton->setObjectName("copyBtn");
-    m_copyButton->setToolTip("Copy Markdown");
-    m_copyButton->setFixedSize(30, 30);
-    m_copyButton->setCursor(Qt::PointingHandCursor);
+    // Step 3 & 4: Build combined top action bar (formatting + close/copy)
+    QHBoxLayout* topBarLayout = new QHBoxLayout();
+    topBarLayout->setSpacing(6);
     
-    m_closeButton = new QPushButton("✕", card);
-    m_closeButton->setObjectName("cancelBtn");
-    m_closeButton->setFixedSize(30, 30);
-    m_closeButton->setCursor(Qt::PointingHandCursor);
-    
-    topLayout->addStretch();
-    topLayout->addWidget(m_copyButton);
-    topLayout->addSpacing(4);
-    topLayout->addWidget(m_closeButton);
-    cardLayout->addLayout(topLayout);
-    
-    // Step 4: Build formatting toolbar buttons
-    QHBoxLayout* formatLayout = new QHBoxLayout();
-    formatLayout->setSpacing(8);
     auto* btnBold = createToolbarBtn("B"); btnBold->setObjectName("btnBold");
     auto* btnItalic = createToolbarBtn("I"); btnItalic->setObjectName("btnItalic");
     auto* btnUnder = createToolbarBtn("U"); btnUnder->setObjectName("btnUnder");
@@ -76,20 +58,36 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     auto* btnBullet = createToolbarBtn("•"); btnBullet->setObjectName("btnBullet");
     auto* btnNum = createToolbarBtn("1."); btnNum->setObjectName("btnNum");
     
-    formatLayout->addWidget(btnBold);
-    formatLayout->addWidget(btnItalic);
-    formatLayout->addWidget(btnUnder);
-    formatLayout->addWidget(btnStrike);
-    formatLayout->addSpacing(10);
-    formatLayout->addWidget(btnH1);
-    formatLayout->addWidget(btnH2);
-    formatLayout->addWidget(btnH3);
-    formatLayout->addSpacing(10);
-    formatLayout->addWidget(btnBullet);
-    formatLayout->addWidget(btnNum);
-    formatLayout->addStretch();
+    topBarLayout->addWidget(btnBold);
+    topBarLayout->addWidget(btnItalic);
+    topBarLayout->addWidget(btnUnder);
+    topBarLayout->addWidget(btnStrike);
+    topBarLayout->addSpacing(12);
+    topBarLayout->addWidget(btnH1);
+    topBarLayout->addWidget(btnH2);
+    topBarLayout->addWidget(btnH3);
+    topBarLayout->addSpacing(12);
+    topBarLayout->addWidget(btnBullet);
+    topBarLayout->addWidget(btnNum);
     
-    cardLayout->addLayout(formatLayout);
+    topBarLayout->addStretch();
+    
+    m_copyButton = new QPushButton(card);
+    m_copyButton->setObjectName("copyBtn");
+    m_copyButton->setToolTip("Copy Markdown");
+    m_copyButton->setFixedSize(30, 30);
+    m_copyButton->setCursor(Qt::PointingHandCursor);
+    
+    m_closeButton = new QPushButton("✕", card);
+    m_closeButton->setObjectName("cancelBtn");
+    m_closeButton->setFixedSize(30, 30);
+    m_closeButton->setCursor(Qt::PointingHandCursor);
+    
+    topBarLayout->addWidget(m_copyButton);
+    topBarLayout->addSpacing(4);
+    topBarLayout->addWidget(m_closeButton);
+    
+    cardLayout->addLayout(topBarLayout);
     
     // Step 5: Instantiate and configure embedded MarkdownEditor
     m_textEdit = new MarkdownEditor(card);
@@ -135,8 +133,8 @@ NoteEditorOverlay::~NoteEditorOverlay() {}
  */
 QPushButton* NoteEditorOverlay::createToolbarBtn(const QString& text) {
     auto* btn = new QPushButton(text, this);
-    btn->setObjectName("toolbarBtn");
-    btn->setFixedSize(36, 36);
+    btn->setProperty("isToolbarBtn", true);
+    btn->setFixedSize(30, 30);
     btn->setCursor(Qt::PointingHandCursor);
     return btn;
 }
@@ -160,21 +158,26 @@ void NoteEditorOverlay::onActiveNoteChanged(int noteId) {
             
             // Step 4: Compute semi-transparent tint based on the note's tab accent color
             QColor c(noteOpt->color);
-            QString bgColor = QString("rgba(%1, %2, %3, 0.15)").arg(c.red()).arg(c.green()).arg(c.blue());
-            QString hoverColor = QString("rgba(%1, %2, %3, 0.3)").arg(c.red()).arg(c.green()).arg(c.blue());
+            // Mix dark background #18181b (24, 24, 27) with the accent color heavily
+            int r = (24 * 6 + c.red()) / 7;
+            int g = (24 * 6 + c.green()) / 7;
+            int b = (27 * 6 + c.blue()) / 7;
+            QString bgColor = QString("rgba(%1, %2, %3, 0.98)").arg(r).arg(g).arg(b);
             
             QString globalStyle = QString(
                 "QFrame#sleekCard {"
                 "    background-color: %1;"
-                "    border: 2px solid %2;"
-                "    border-radius: 12px;"
+                "    border: 1px solid %2;"
+                "    border-radius: 10px;"
                 "}"
                 "QTextEdit {"
-                "    background: transparent;"
+                "    background: #18181b;"
                 "    color: #e4e4e7;"
                 "    font-family: sans-serif;"
                 "    font-size: 16px;"
-                "    border: none;"
+                "    border: 1px solid #3f3f46;"
+                "    border-radius: 6px;"
+                "    padding: 12px;"
                 "}"
                 "QScrollBar:vertical {"
                 "    border: none;"
@@ -198,16 +201,17 @@ void NoteEditorOverlay::onActiveNoteChanged(int noteId) {
                 "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {"
                 "    background: none;"
                 "}"
-                "QPushButton#toolbarBtn {"
-                "    background-color: transparent;"
+                "QPushButton[isToolbarBtn=\"true\"] {"
+                "    background-color: #27272a;"
                 "    color: #d4d4d8;"
-                "    border: none;"
+                "    border: 1px solid #3f3f46;"
                 "    border-radius: 4px;"
                 "    font-size: 14px;"
                 "}"
-                "QPushButton#toolbarBtn:hover {"
-                "    background-color: %3;"
+                "QPushButton[isToolbarBtn=\"true\"]:hover {"
+                "    background-color: #3f3f46;"
                 "    color: white;"
+                "    border: 1px solid %2;"
                 "}"
                 "QPushButton#btnBold { font-weight: bold; }"
                 "QPushButton#btnItalic { font-style: italic; }"
@@ -218,13 +222,13 @@ void NoteEditorOverlay::onActiveNoteChanged(int noteId) {
                 "    image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='9' y='9' width='13' height='13' rx='2' ry='2'></rect><path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'></path></svg>\");"
                 "}"
                 "QPushButton#copyBtn:hover {"
-                "    background-color: %3;"
+                "    background-color: #3f3f46;"
                 "}"
                 "QPushButton#cancelBtn {"
                 "    background-color: transparent; color: #a1a1aa; border: none; font-weight: bold; font-size: 14px;"
                 "}"
                 "QPushButton#cancelBtn:hover { color: white; background-color: #ef4444; border-radius: 15px; }"
-            ).arg(bgColor, noteOpt->color, hoverColor);
+            ).arg(bgColor, noteOpt->color);
             
             QFrame* card = findChild<QFrame*>("sleekCard");
             if (card) {

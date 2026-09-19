@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo/logo.svg" alt="gutterTab Logo" width="400">
+</p>
+
 # gutterTab
 
 `gutterTab` is a high-performance, edge-docked note and prompt management daemon engineered for Linux desktop environments (optimized for Openbox and lightweight window managers). Built with Modern C++17, Qt6, and native X11/XCB systems integration, `gutterTab` provides instant access to context-specific notes, prompt templates, and code snippets through subtle binder-style tabs along the screen border.

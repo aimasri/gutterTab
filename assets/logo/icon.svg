@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181924"/>
+      <stop offset="100%" stop-color="#0b0c12"/>
+    </linearGradient>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#38e2fc"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient>
+    <linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#6366f1"/></linearGradient>
+    <linearGradient id="g5" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f472b6"/><stop offset="100%" stop-color="#ec4899"/></linearGradient>
+    <linearGradient id="g7" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#fdba74"/><stop offset="100%" stop-color="#fb923c"/></linearGradient>
+    <linearGradient id="g9" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#34d399"/><stop offset="100%" stop-color="#10b981"/></linearGradient>
+    <linearGradient id="spineGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#ec4899"/></linearGradient>
+  </defs>
+  <rect x="10" y="10" width="236" height="236" rx="56" ry="56" fill="url(#bgGrad)" stroke="#ffffff" stroke-opacity="0.12" stroke-width="2.5"/>
+  <rect x="36" y="36" width="162" height="64" rx="8" ry="8" fill="url(#g1)"/>
+  <rect x="36"  y="108" width="77" height="50" rx="7" ry="7" fill="url(#g3)"/>
+  <rect x="121" y="108" width="77" height="50" rx="7" ry="7" fill="url(#g5)"/>
+  <rect x="36"  y="166" width="58" height="54" rx="7" ry="7" fill="url(#g7)"/>
+  <rect x="102" y="166" width="96" height="54" rx="7" ry="7" fill="url(#g9)"/>
+  <rect x="206" y="36" width="14" height="184" rx="5" ry="5" fill="url(#spineGrad)"/>
+</svg>

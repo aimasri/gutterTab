@@ -25,7 +25,11 @@ set(PROJECT_SOURCES
     src/domain/TabController.cpp
     src/presentation/OverlayWindow.cpp
     src/presentation/GutterStrip.cpp
-    src/presentation/GutterTab.cpp src/presentation/SleekDialogs.cpp
+    src/presentation/GutterTab.cpp
+    src/presentation/DashboardButton.cpp
+    src/presentation/BentoCard.cpp
+    src/presentation/BentoDashboard.cpp
+    src/presentation/SleekDialogs.cpp
     src/presentation/ProfilePickerWindow.cpp
     src/presentation/SleekSideChooserDialog.cpp
     src/presentation/NoteEditorOverlay.cpp

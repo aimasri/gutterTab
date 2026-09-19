@@ -98,6 +98,18 @@ void TabController::closeNote() {
     emit activeNoteChanged(-1);
 }
 
+void TabController::toggleDashboard() {
+    if (m_state == State::DASHBOARD) {
+        setState(State::IDLE);
+    } else {
+        // If a note was open, close it first.
+        if (m_state == State::OPEN) {
+            closeNote();
+        }
+        setState(State::DASHBOARD);
+    }
+}
+
 void TabController::reorderNote(int id, int newIndex) {
     // Step 1: Persist the new tab sequence in DatabaseManager.
     // DatabaseManager executes an atomic transaction that re-indexes sort_order across notes.

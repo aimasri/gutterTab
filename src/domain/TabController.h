@@ -44,7 +44,9 @@ public:
         /// @brief Hover/peek state; gutter tabs expand partially to reveal labels and color indicators.
         PEEKING,
         /// @brief Active editing state; a note is open in NoteEditorOverlay with background dimming enabled.
-        OPEN
+        OPEN,
+        /// @brief Dashboard mode; all notes are displayed in a full-screen bento grid.
+        DASHBOARD
     };
 
     /**
@@ -125,7 +127,7 @@ public:
     /**
      * @brief Retrieves the current state of the state machine.
      * 
-     * @return Current State (IDLE, PEEKING, or OPEN).
+     * @return Current State (IDLE, PEEKING, OPEN, or DASHBOARD).
      */
     State currentState() const { return m_state; }
 
@@ -165,6 +167,11 @@ public slots:
      *   emits activeNoteChanged(-1).
      */
     void closeNote();
+
+    /**
+     * @brief Toggles between DASHBOARD state and IDLE state.
+     */
+    void toggleDashboard();
 
 signals:
     /**

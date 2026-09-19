@@ -3,6 +3,7 @@
 #include <QWidget>
 #include <QRegion>
 #include "../domain/TabController.h"
+#include "BentoDashboard.h"
 
 namespace presentation {
 
@@ -148,7 +149,8 @@ private:
     domain::TabController* m_controller; ///< Non-owning pointer to the domain TabController.
     
     GutterStrip* m_gutterStrip;          ///< Child widget rendering the stack of note tabs.
-    NoteEditorOverlay* m_editorOverlay;  ///< Child overlay rendering the active note markdown editor.
+    NoteEditorOverlay* m_editorOverlay;
+    BentoDashboard* m_dashboardOverlay;  ///< Child overlay rendering the active note markdown editor.
     QTimer* m_hotkeyTimer;               ///< 50ms polling timer for keyboard modifiers.
     bool m_isHotkeyDown = false;         ///< Cached hotkey modifier status (Ctrl+Shift).
     

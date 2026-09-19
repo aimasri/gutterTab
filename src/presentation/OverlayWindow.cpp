@@ -38,7 +38,8 @@ OverlayWindow::OverlayWindow(domain::TabController* controller, QWidget* parent)
     // Step 3: Instantiate child components within the presentation layer.
     m_gutterStrip = new GutterStrip(controller, this);
     connect(m_gutterStrip, &GutterStrip::triggerAreaChanged, this, [this]() { updateGutterGeometry(); });
-    m_editorOverlay = new NoteEditorOverlay(controller, nullptr);
+        m_dashboardOverlay = new BentoDashboard(controller, this);
+m_editorOverlay = new NoteEditorOverlay(controller, nullptr);
     
     // Step 4: Subscribe to domain controller state transitions.
     connect(m_controller, &domain::TabController::stateChanged, 
@@ -97,6 +98,9 @@ void OverlayWindow::paintEvent(QPaintEvent* event) {
     if (m_controller->currentState() == domain::TabController::State::OPEN) {
         // Step 1: In OPEN state, render semi-transparent backdrop for focus dimming.
         painter.fillRect(rect(), QColor(0, 0, 0, 150));
+    } else if (m_controller->currentState() == domain::TabController::State::DASHBOARD) {
+        // Dashboard has its own background dimming in BentoDashboard widget
+        // But we shouldn't clear alpha here.
     } else {
         // Step 2: In IDLE/PEEKING state, clear alpha channel to maintain transparency.
         painter.setCompositionMode(QPainter::CompositionMode_Clear);
@@ -139,13 +143,17 @@ void OverlayWindow::updateGutterGeometry() {
     QRect screenRect = screen->geometry();
 
     // Step 3: Compute coordinate spaces based on active state.
-    if (m_controller->currentState() == domain::TabController::State::OPEN) {
-        // OPEN state: Span full primary screen for backdrop dimming and modal click interception.
+    if (m_controller->currentState() == domain::TabController::State::OPEN || 
+        m_controller->currentState() == domain::TabController::State::DASHBOARD) {
+        // OPEN/DASHBOARD state: Span full primary screen for backdrop dimming and modal click interception.
         setGeometry(screenRect);
         if (config.edge == infrastructure::Config::Edge::Left) {
             m_gutterStrip->setGeometry(0, 0, w, height());
         } else {
             m_gutterStrip->setGeometry(width() - w, 0, w, height());
+        }
+        if (m_dashboardOverlay) {
+            m_dashboardOverlay->setGeometry(0, 0, width(), height());
         }
     } else {
         // IDLE/PEEKING state: Fit window geometry strictly around the gutter strip.
@@ -182,6 +190,8 @@ void OverlayWindow::mousePressEvent(QMouseEvent* event) {
     if (m_controller->currentState() == domain::TabController::State::OPEN) {
         // If clicking the dim background, close the note
         m_controller->closeNote();
+    } else if (m_controller->currentState() == domain::TabController::State::DASHBOARD) {
+        m_controller->toggleDashboard();
     }
     QWidget::mousePressEvent(event);
 }
@@ -196,7 +206,14 @@ void OverlayWindow::mousePressEvent(QMouseEvent* event) {
  * @param state The newly transitioned domain::TabController::State.
  */
 void OverlayWindow::onStateChanged(domain::TabController::State state) {
-    Q_UNUSED(state);
+    if (state == domain::TabController::State::DASHBOARD) {
+        m_dashboardOverlay->showDashboard(m_gutterStrip->geometry());
+    } else {
+        if (m_dashboardOverlay && m_dashboardOverlay->isVisible()) {
+            m_dashboardOverlay->hideDashboard();
+        }
+    }
+
     // Defer geometry calculation to avoid re-entrancy during state updates
     QTimer::singleShot(50, this, [this]() {
         updateGutterGeometry();

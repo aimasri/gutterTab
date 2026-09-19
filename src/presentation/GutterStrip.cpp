@@ -112,6 +112,7 @@ void GutterStrip::updateTabs() {
         }
         delete item;
     }
+    m_dashboardBtn = nullptr;
     m_tabs.clear();
     
     if (notes.isEmpty()) return;
@@ -126,7 +127,33 @@ void GutterStrip::updateTabs() {
     bool isOpen = (m_controller->currentState() == domain::TabController::State::OPEN);
     bool isPeeking = (m_controller->currentState() == domain::TabController::State::PEEKING);
     
-    // Step 4: Instantiate and configure each tab widget.
+    
+    // Add Dashboard button at the top
+    m_dashboardBtn = new DashboardButton(this);
+    m_layout->addWidget(m_dashboardBtn);
+    connect(m_dashboardBtn, &DashboardButton::clicked, m_controller, &domain::TabController::toggleDashboard);
+    connect(m_dashboardBtn, &DashboardButton::hovered, this, [this]() {
+        auto& config = infrastructure::ConfigManager::instance().config();
+        m_collapseTimer->stop();
+        if (m_controller->currentState() != domain::TabController::State::OPEN) {
+            m_controller->setState(domain::TabController::State::PEEKING);
+            m_dashboardBtn->animateToWidth(config.gutterPeekWidth);
+            for (auto tab : m_tabs) {
+                tab->animateToWidth(config.gutterHoverWidth);
+            }
+        }
+    });
+    connect(m_dashboardBtn, &DashboardButton::unhovered, this, [this]() {
+        auto& config = infrastructure::ConfigManager::instance().config();
+        if (m_controller->currentState() != domain::TabController::State::OPEN) {
+            if (!m_dialogOpen) m_collapseTimer->start();
+        }
+    });
+    
+    // Add negative spacer before first tab
+    m_layout->addSpacerItem(new QSpacerItem(0, -10, QSizePolicy::Fixed, QSizePolicy::Fixed));
+
+// Step 4: Instantiate and configure each tab widget.
     for (int i = 0; i < notes.size(); ++i) {
         const auto& note = notes[i];
         
@@ -271,6 +298,7 @@ void GutterStrip::onActiveNoteChanged(int noteId) {
     if (noteId == -1) {
         if (rect().contains(mapFromGlobal(QCursor::pos()))) {
             m_controller->setState(domain::TabController::State::PEEKING);
+            if (m_dashboardBtn) m_dashboardBtn->animateToWidth(config.gutterHoverWidth);
             for (auto tab : m_tabs) {
                 tab->animateToWidth(config.gutterHoverWidth);
             }
@@ -279,6 +307,7 @@ void GutterStrip::onActiveNoteChanged(int noteId) {
             emit triggerAreaChanged();
         } else {
             m_controller->setState(domain::TabController::State::IDLE);
+            if (m_dashboardBtn) m_dashboardBtn->animateToWidth(config.gutterRestWidth);
             for (auto tab : m_tabs) {
                 tab->animateToWidth(config.gutterRestWidth);
             }
@@ -316,6 +345,7 @@ void GutterStrip::enterEvent(QEnterEvent* event) {
     
     if (m_controller->currentState() != domain::TabController::State::OPEN) {
         m_controller->setState(domain::TabController::State::PEEKING);
+        if (m_dashboardBtn) m_dashboardBtn->animateToWidth(config.gutterHoverWidth);
         for (auto tab : m_tabs) {
             tab->animateToWidth(config.gutterHoverWidth);
         }
@@ -354,6 +384,7 @@ void GutterStrip::onTabHovered(GutterTab* hoveredTab) {
     } else {
         m_collapseTimer->stop();
         m_controller->setState(domain::TabController::State::PEEKING);
+        if (m_dashboardBtn) m_dashboardBtn->animateToWidth(config.gutterHoverWidth);
         for (auto tab : m_tabs) {
             if (tab == hoveredTab) {
                 tab->animateToWidth(config.gutterPeekWidth);
@@ -397,6 +428,7 @@ void GutterStrip::collapseTimerFired() {
     if (!rect().contains(mapFromGlobal(QCursor::pos()))) {
         m_controller->setState(domain::TabController::State::IDLE);
         auto& config = infrastructure::ConfigManager::instance().config();
+        if (m_dashboardBtn) m_dashboardBtn->animateToWidth(config.gutterRestWidth);
         for (auto tab : m_tabs) {
             tab->animateToWidth(config.gutterRestWidth);
         }

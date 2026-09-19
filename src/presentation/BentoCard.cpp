@@ -1,6 +1,7 @@
 #include "BentoCard.h"
 #include <QPainter>
 #include <QPainterPath>
+#include <QTextDocument>
 #include <QMouseEvent>
 #include <QRegularExpression>
 #include <QFile>
@@ -121,10 +122,14 @@ void BentoCard::paintEvent(QPaintEvent* event) {
     font.setBold(false);
     painter.setFont(font);
     
-    // Strip markdown formatting simple attempt
-    QString plainText = m_note.content;
-    plainText.replace(QRegularExpression("[#*`>\\[\\]]"), "");
-    plainText.replace(QRegularExpression("\\(.*\\)"), ""); // remove links
+    // Extract pure plain text for preview (handles both legacy Markdown and new HTML storage)
+    QTextDocument doc;
+    if (m_note.content.trimmed().startsWith("<") || m_note.content.contains("<html")) {
+        doc.setHtml(m_note.content);
+    } else {
+        doc.setMarkdown(m_note.content);
+    }
+    QString plainText = doc.toPlainText().trimmed();
     
     QRect previewRect = textRect.adjusted(0, 30, 0, 0);
     painter.setPen(QColor(255, 255, 255, 180));

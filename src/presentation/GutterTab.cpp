@@ -1,5 +1,6 @@
 #include <QDrag>
 #include <QMimeData>
+#include <QTextDocument>
 #include <QApplication>
 #include "GutterTab.h"
 #include <QPainter>
@@ -171,8 +172,17 @@ void GutterTab::paintEvent(QPaintEvent* event) {
  * @return Formatted multi-line preview snippet.
  */
 QString GutterTab::getSnippet() const {
+    // Safely extract plain text from HTML or Markdown
+    QTextDocument doc;
+    if (m_note.content.trimmed().startsWith("<") || m_note.content.contains("<html")) {
+        doc.setHtml(m_note.content);
+    } else {
+        doc.setMarkdown(m_note.content);
+    }
+    
     // Extract first 3 non-empty lines for snippet
-    QStringList lines = m_note.content.split('\n', Qt::SkipEmptyParts);
+    QString plainText = doc.toPlainText();
+    QStringList lines = plainText.split('\n', Qt::SkipEmptyParts);
     QString snippet;
     int count = 0;
     for (const QString& line : lines) {

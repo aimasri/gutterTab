@@ -57,8 +57,6 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     
     auto* btnBullet = createToolbarBtn("•"); btnBullet->setObjectName("btnBullet");
     auto* btnNum = createToolbarBtn("1."); btnNum->setObjectName("btnNum");
-    auto* btnSpace = createToolbarBtn("Space"); btnSpace->setObjectName("btnSpace");
-    btnSpace->setToolTip("Insert Hard Line Break");
     
     topBarLayout->addWidget(btnBold);
     topBarLayout->addWidget(btnItalic);
@@ -71,8 +69,6 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     topBarLayout->addSpacing(12);
     topBarLayout->addWidget(btnBullet);
     topBarLayout->addWidget(btnNum);
-    topBarLayout->addSpacing(12);
-    topBarLayout->addWidget(btnSpace);
     
     topBarLayout->addStretch();
     
@@ -109,7 +105,6 @@ NoteEditorOverlay::NoteEditorOverlay(domain::TabController* controller, QWidget*
     connect(btnH3, &QPushButton::clicked, this, &NoteEditorOverlay::onFormatH3);
     connect(btnBullet, &QPushButton::clicked, this, &NoteEditorOverlay::onFormatBulletList);
     connect(btnNum, &QPushButton::clicked, this, &NoteEditorOverlay::onFormatNumberedList);
-    connect(btnSpace, &QPushButton::clicked, this, &NoteEditorOverlay::onFormatSpace);
     
     // Step 7: Connect window actions and content change monitoring
     connect(m_copyButton, &QPushButton::clicked, this, &NoteEditorOverlay::onCopyToClipboard);
@@ -158,7 +153,11 @@ void NoteEditorOverlay::onActiveNoteChanged(int noteId) {
         if (noteOpt) {
             // Step 3: Populate MarkdownEditor while blocking signals to avoid feedback loops
             m_textEdit->blockSignals(true);
-            m_textEdit->setMarkdown(noteOpt->content);
+            if (noteOpt->content.trimmed().startsWith("<") || noteOpt->content.contains("<html")) {
+                m_textEdit->setHtml(noteOpt->content);
+            } else {
+                m_textEdit->setMarkdown(noteOpt->content);
+            }
             m_textEdit->blockSignals(false);
             
             // Step 4: Compute semi-transparent tint based on the note's tab accent color
@@ -252,9 +251,9 @@ void NoteEditorOverlay::onActiveNoteChanged(int noteId) {
 void NoteEditorOverlay::onTextChanged() {
     int currentId = m_controller->activeNoteId();
     if (currentId != -1) {
-        QString md = m_textEdit->toMarkdown();
-        qDebug() << "Saving note ID:" << currentId << "Content Length:" << md.length();
-        m_controller->updateNoteContent(currentId, md);
+        // We now persist as HTML to perfectly preserve user spacing and rich text natively.
+        QString content = m_textEdit->toHtml();
+        m_controller->updateNoteContent(currentId, content);
     }
 }
 
@@ -406,14 +405,6 @@ void NoteEditorOverlay::onFormatNumberedList() {
     } else {
         cursor.createList(QTextListFormat::ListDecimal);
     }
-    m_textEdit->setFocus();
-}
-
-/**
- * @brief Inserts a hard HTML break to bypass Markdown empty-line collapsing.
- */
-void NoteEditorOverlay::onFormatSpace() {
-    m_textEdit->textCursor().insertHtml("&nbsp;<br><br>");
     m_textEdit->setFocus();
 }
 

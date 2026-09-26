@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" width="900" height="300">
   <defs>
+    <!-- Brand Gradients -->
     <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#38e2fc"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient>
     <linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#6366f1"/></linearGradient>
     <linearGradient id="g5" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f472b6"/><stop offset="100%" stop-color="#ec4899"/></linearGradient>
@@ -7,6 +8,7 @@
     <linearGradient id="g9" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#34d399"/><stop offset="100%" stop-color="#10b981"/></linearGradient>
     <linearGradient id="spineGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#ec4899"/></linearGradient>
 
+    <!-- Wordmark Gradient -->
     <linearGradient id="tabGrad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#38bdf8"/>
       <stop offset="45%" stop-color="#a855f7"/>
@@ -22,5 +24,24 @@
       <rect x="206" y="36" width="14" height="184" rx="5" fill="url(#spineGrad)"/>
     </g>
   </defs>
-  <use href="#tabBentoGroup"/>
+  <rect width="900" height="300" fill="#0d0e15"/>
+
+  <!-- Bento precisely centered at Y=150 -->
+  <g transform="translate(60, 2.85) scale(1.15)">
+    <use href="#tabBentoGroup"/>
+  </g>
+
+  <!-- Typography precisely centered at Y=150 -->
+  <g transform="translate(340, 0)">
+    <text x="0" y="157"
+          font-family="'Inter', 'Liberation Sans', 'DejaVu Sans', -apple-system, sans-serif"
+          font-size="82" font-weight="400" letter-spacing="-1.5px">
+      <tspan fill="#F8FAFC" font-weight="400">gutter</tspan><tspan fill="url(#tabGrad)" font-weight="800">Tab</tspan>
+    </text>
+    <text x="4" y="195"
+          font-family="'Inter', 'Liberation Sans', 'DejaVu Sans', sans-serif"
+          font-size="16" font-weight="500" letter-spacing="2.5px" fill="#94A3B8">
+      Edge-Docked Note &amp; Prompt Daemon
+    </text>
+  </g>
 </svg>

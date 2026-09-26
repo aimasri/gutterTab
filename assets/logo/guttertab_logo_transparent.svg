@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
   <defs>
     <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#38e2fc"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient>
     <linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#6366f1"/></linearGradient>
@@ -22,5 +22,23 @@
       <rect x="206" y="36" width="14" height="184" rx="5" fill="url(#spineGrad)"/>
     </g>
   </defs>
-  <use href="#tabBentoGroup"/>
+  <!-- Transparent Canvas -->
+
+  <!-- Centered Bento Cards -->
+  <g transform="translate(221, 70) scale(1.4)">
+    <use href="#tabBentoGroup"/>
+  </g>
+
+  <!-- Typography in Proper Brand Case -->
+  <text x="400" y="405" text-anchor="middle"
+        font-family="'Inter', 'Liberation Sans', 'DejaVu Sans', -apple-system, sans-serif"
+        font-size="82" font-weight="400" letter-spacing="-1.5px">
+    <tspan fill="#F8FAFC" font-weight="400">gutter</tspan><tspan fill="url(#tabGrad)" font-weight="800">Tab</tspan>
+  </text>
+
+  <text x="400" y="445" text-anchor="middle"
+        font-family="'Inter', 'Liberation Sans', 'DejaVu Sans', sans-serif"
+        font-size="16" font-weight="500" letter-spacing="3px" fill="#94A3B8">
+    Edge-Docked Note &amp; Prompt Daemon
+  </text>
 </svg>
